@@ -541,6 +541,24 @@ select.form-input{cursor:pointer;}
           <input type="date" class="form-input" id="bkDate"/>
         </div>
       </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Preferred Start Time</label>
+          <input type="time" class="form-input" id="bkTime"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Session Duration</label>
+          <select class="form-input" id="bkDuration">
+            <option value="">Select duration…</option>
+            <option>1 hour</option>
+            <option>2 hours</option>
+            <option>3 hours</option>
+            <option>4 hours</option>
+            <option>Half day (5 hrs)</option>
+            <option>Full day (8 hrs)</option>
+          </select>
+        </div>
+      </div>
       <div class="form-group">
         <label class="form-label">Tell Us About Your Project</label>
         <textarea class="form-input" id="bkMessage" placeholder="Share your ideas, the story you want to tell, any special requests…"></textarea>
@@ -588,12 +606,14 @@ select.form-input{cursor:pointer;}
 /* ── WHATSAPP ── */
 function sendWhatsApp(e){
   e.preventDefault();
-  const name = (document.getElementById('bkFirstName').value + ' ' + document.getElementById('bkLastName').value).trim();
-  const phone = document.getElementById('bkPhone').value;
-  const type  = document.getElementById('bkType').value;
-  const date  = document.getElementById('bkDate').value;
-  const msg   = document.getElementById('bkMessage').value;
-  const text  = `Hello SKATE MULTIMEDIA! I'd like to book a session.\n\n*Name:* ${name||'N/A'}\n*Phone:* ${phone||'N/A'}\n*Session Type:* ${type||'N/A'}\n*Date:* ${date||'N/A'}\n*Message:* ${msg||'N/A'}`;
+  const name     = (document.getElementById('bkFirstName').value + ' ' + document.getElementById('bkLastName').value).trim();
+  const phone    = document.getElementById('bkPhone').value;
+  const type     = document.getElementById('bkType').value;
+  const date     = document.getElementById('bkDate').value;
+  const time     = document.getElementById('bkTime').value;
+  const duration = document.getElementById('bkDuration').value;
+  const msg      = document.getElementById('bkMessage').value;
+  const text  = `Hello SKATE MULTIMEDIA! I'd like to book a session.\n\n*Name:* ${name||'N/A'}\n*Phone:* ${phone||'N/A'}\n*Session Type:* ${type||'N/A'}\n*Date:* ${date||'N/A'}\n*Start Time:* ${time||'N/A'}\n*Duration:* ${duration||'N/A'}\n*Message:* ${msg||'N/A'}`;
   window.open('https://wa.me/233550937087?text='+encodeURIComponent(text),'_blank');
 }
 
