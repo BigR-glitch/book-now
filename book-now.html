@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Book a Session — Skate Multimedia</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS — matched to WordPress site
+═══════════════════════════════════════════ */
+:root {
+  --bg:        #ffffff;
+  --bg-alt:    #f7f7f7;
+  --bg-card:   #f2f2f2;
+  --border:    #e0e0e0;
+  --text:      #111111;
+  --text-mid:  #444444;
+  --text-muted:#888888;
+  --red:       #c8191a;
+  --red-hover: #a81415;
+  --red-light: rgba(200,25,26,0.07);
+  --black:     #0a0a0a;
+  --white:     #ffffff;
+  --transition: cubic-bezier(0.25,0.46,0.45,0.94);
+}
+
+/* ── RESET ── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  overflow-x:hidden;
+  min-height:100vh;
+}
+
+/* ══════════════════════════════════════════
+   DIAGONAL GRID TEXTURE (matches WP hero)
+══════════════════════════════════════════ */
+.grid-texture{
+  position:absolute;inset:0;pointer-events:none;overflow:hidden;
+  opacity:0.18;
+}
+.grid-texture svg{width:100%;height:100%;}
+
+/* ══════════════════════════════════════════
+   TOP NAV BAR
+══════════════════════════════════════════ */
+.top-bar{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2rem;
+  height:68px;
+  background:var(--white);
+  border-bottom:1px solid var(--border);
+}
+
+/* Logo — mimics the small black wordmark on the WP site */
+.bar-logo{
+  display:flex;align-items:center;gap:0.5rem;
+  text-decoration:none;
+}
+.bar-logo-box{
+  width:40px;height:40px;
+  background:var(--black);
+  display:flex;align-items:center;justify-content:center;
+  border-radius:2px;
+  flex-shrink:0;
+}
+.bar-logo-box span{
+  font-size:0.55rem;font-weight:700;letter-spacing:0.05em;
+  text-transform:uppercase;color:var(--white);line-height:1.1;
+  text-align:center;
+}
+.bar-logo-text{
+  display:flex;flex-direction:column;line-height:1.1;
+}
+.bar-logo-text .l1{
+  font-size:0.78rem;font-weight:800;letter-spacing:0.04em;
+  text-transform:uppercase;color:var(--black);
+}
+.bar-logo-text .l2{
+  font-size:0.58rem;font-weight:400;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--text-muted);
+}
+
+/*
+  ════════════════════════════════════════
+  BACK BUTTON  ← configure here
+  Replace href="YOUR_WORDPRESS_URL_HERE"
+  with the client's WordPress page URL.
+  ════════════════════════════════════════
+*/
+.back-btn{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  font-size:0.72rem;font-weight:600;letter-spacing:0.06em;
+  text-transform:uppercase;color:var(--text-mid);
+  text-decoration:none;
+  padding:0.5rem 1rem;
+  border:1.5px solid var(--border);
+  border-radius:2px;
+  transition:all 0.22s;
+}
+.back-btn:hover{
+  border-color:var(--red);
+  color:var(--red);
+  background:var(--red-light);
+}
+.back-arrow{
+  font-size:0.9rem;
+  transition:transform 0.22s;
+}
+.back-btn:hover .back-arrow{transform:translateX(-3px);}
+
+/* ══════════════════════════════════════════
+   HERO BAND  (matches WP hero style)
+══════════════════════════════════════════ */
+.hero-band{
+  position:relative;
+  margin-top:68px;
+  background:var(--black);
+  padding:5rem 2rem 5rem;
+  overflow:hidden;
+  min-height:240px;
+  display:flex;align-items:center;
+}
+.hero-band-inner{
+  position:relative;z-index:2;
+  max-width:700px;
+}
+.hero-eyebrow{
+  font-size:0.7rem;font-weight:600;letter-spacing:0.3em;
+  text-transform:uppercase;color:var(--red);
+  margin-bottom:1.2rem;
+  display:flex;align-items:center;gap:1rem;
+}
+.hero-eyebrow::before{
+  content:'';display:block;width:32px;height:2px;
+  background:var(--red);border-radius:2px;
+}
+.hero-title{
+  font-family:'Inter',sans-serif;
+  font-size:clamp(2.4rem,6vw,4.2rem);
+  font-weight:900;line-height:1.05;
+  color:var(--white);
+  letter-spacing:-0.02em;
+}
+.hero-title em{
+  font-style:italic;
+  font-family:'Playfair Display',serif;
+  font-weight:400;
+  color:var(--red);
+}
+.hero-sub{
+  margin-top:1.2rem;
+  font-size:1rem;font-weight:400;color:rgba(255,255,255,0.6);
+  line-height:1.7;max-width:520px;
+}
+
+/* ══════════════════════════════════════════
+   PAGE WRAPPER
+══════════════════════════════════════════ */
+.page-wrapper{
+  max-width:1100px;
+  margin:0 auto;
+  padding:4rem 2rem 6rem;
+}
+
+/* ══════════════════════════════════════════
+   BOOK LAYOUT
+══════════════════════════════════════════ */
+.book-layout{
+  display:grid;
+  grid-template-columns:1fr 1.45fr;
+  gap:4rem;
+  align-items:start;
+}
+@media(max-width:860px){.book-layout{grid-template-columns:1fr;gap:3rem;}}
+
+/* ── SIDEBAR ── */
+.book-visual{
+  width:100%;aspect-ratio:4/5;object-fit:cover;
+  display:block;margin-bottom:2rem;
+}
+.book-quote{
+  font-family:'Playfair Display',serif;
+  font-size:1.25rem;font-style:italic;font-weight:400;
+  color:var(--text);line-height:1.5;
+  border-left:3px solid var(--red);
+  padding-left:1.2rem;
+  margin-bottom:2.5rem;
+}
+.book-meta{display:flex;flex-direction:column;gap:0;}
+.book-meta-item{
+  display:flex;align-items:flex-start;gap:1rem;
+  padding:1.1rem 0;
+  border-bottom:1px solid var(--border);
+}
+.book-meta-item:last-child{border-bottom:none;}
+.book-meta-icon{font-size:1rem;margin-top:0.1rem;flex-shrink:0;}
+.book-meta-label{
+  font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;
+  font-weight:700;color:var(--red);display:block;margin-bottom:0.25rem;
+}
+.book-meta-val{font-size:0.85rem;color:var(--text-mid);line-height:1.5;}
+
+/* ── FORM CARD ── */
+.form-card{
+  background:var(--white);
+  border:1.5px solid var(--border);
+  padding:2.8rem;
+}
+.form-card-header{
+  display:flex;align-items:center;gap:1rem;
+  margin-bottom:2.5rem;padding-bottom:1.5rem;
+  border-bottom:1px solid var(--border);
+}
+.form-card-num{
+  width:40px;height:40px;
+  background:var(--red);color:var(--white);
+  font-size:1rem;font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;
+}
+.form-card-title{
+  font-size:1.1rem;font-weight:800;letter-spacing:-0.01em;
+  color:var(--text);
+}
+.form-card-sub{
+  font-size:0.78rem;color:var(--text-muted);margin-top:0.2rem;
+}
+
+.form-group{margin-bottom:1.3rem;}
+.form-label{
+  font-size:0.62rem;font-weight:700;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--text);
+  display:block;margin-bottom:0.45rem;
+}
+.form-input{
+  width:100%;padding:0.85rem 1rem;
+  background:var(--bg-alt);
+  border:1.5px solid var(--border);
+  color:var(--text);font-size:0.9rem;
+  font-family:'Inter',sans-serif;
+  outline:none;
+  transition:border-color 0.2s,box-shadow 0.2s;
+  border-radius:0;
+  -webkit-appearance:none;
+  appearance:none;
+}
+.form-input:focus{
+  border-color:var(--red);
+  box-shadow:0 0 0 3px rgba(200,25,26,0.1);
+  background:var(--white);
+}
+.form-input::placeholder{color:#bbb;}
+textarea.form-input{resize:vertical;min-height:110px;}
+select.form-input{cursor:pointer;}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+@media(max-width:540px){.form-row{grid-template-columns:1fr;}}
+
+/* ── BUTTONS ── */
+.btn-red{
+  display:flex;align-items:center;justify-content:center;gap:0.7rem;
+  width:100%;padding:1rem 2rem;
+  background:var(--red);color:var(--white);
+  font-size:0.72rem;font-weight:700;letter-spacing:0.14em;
+  text-transform:uppercase;
+  border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;
+  transition:background 0.22s,transform 0.22s;
+  text-decoration:none;
+  margin-top:0.5rem;
+}
+.btn-red:hover{background:var(--red-hover);transform:translateY(-2px);}
+.btn-red .arrow{font-size:1rem;}
+
+.btn-outline{
+  display:flex;align-items:center;justify-content:center;gap:0.7rem;
+  width:100%;padding:1rem 2rem;
+  background:transparent;color:var(--text);
+  font-size:0.72rem;font-weight:700;letter-spacing:0.14em;
+  text-transform:uppercase;
+  border:1.5px solid var(--border);cursor:pointer;
+  font-family:'Inter',sans-serif;
+  transition:all 0.22s;
+  text-decoration:none;
+  margin-top:0.7rem;
+}
+.btn-outline:hover{border-color:var(--red);color:var(--red);background:var(--red-light);}
+
+.btn-whatsapp{
+  display:flex;align-items:center;justify-content:center;gap:0.7rem;
+  width:100%;padding:1rem 2rem;
+  background:#25D366;color:var(--white);
+  font-size:0.72rem;font-weight:700;letter-spacing:0.14em;
+  text-transform:uppercase;
+  border:none;cursor:pointer;
+  font-family:'Inter',sans-serif;
+  transition:background 0.22s,transform 0.22s;
+  text-decoration:none;
+  margin-top:0.7rem;
+}
+.btn-whatsapp:hover{background:#1db954;transform:translateY(-2px);}
+
+.btn-divider{
+  display:flex;align-items:center;gap:1rem;
+  margin:1.2rem 0 0.2rem;
+  font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--text-muted);
+}
+.btn-divider::before,.btn-divider::after{
+  content:'';flex:1;height:1px;background:var(--border);
+}
+
+/* ── SUCCESS STATE ── */
+.success-panel{
+  display:none;
+  border:1.5px solid var(--red);
+  padding:2.5rem;text-align:center;
+  margin-top:1.5rem;
+  background:var(--red-light);
+}
+.success-panel.show{display:block;}
+.success-icon{font-size:2.2rem;display:block;margin-bottom:1rem;}
+.success-title{
+  font-size:1.2rem;font-weight:900;letter-spacing:-0.01em;
+  color:var(--text);margin-bottom:0.5rem;
+}
+.success-text{
+  font-size:0.85rem;color:var(--text-mid);line-height:1.7;margin-bottom:1.5rem;
+}
+/*
+  ════════════════════════════════════════════
+  RETURN BUTTON — shown after booking submit.
+  Replace href="YOUR_WORDPRESS_URL_HERE"
+  with the client's WordPress URL.
+  ════════════════════════════════════════════
+*/
+.return-btn{
+  display:inline-flex;align-items:center;gap:0.6rem;
+  font-size:0.7rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--red);text-decoration:none;
+  border:1.5px solid var(--red);
+  padding:0.7rem 1.6rem;
+  transition:all 0.22s;
+}
+.return-btn:hover{background:var(--red);color:var(--white);}
+
+/* ── FLOATING WHATSAPP FAB ── */
+.fab-wa{
+  position:fixed;bottom:2rem;right:2rem;z-index:400;
+  width:54px;height:54px;border-radius:50%;
+  background:#25D366;color:white;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;text-decoration:none;
+  box-shadow:0 6px 24px rgba(37,211,102,0.4);
+  transition:transform 0.25s,box-shadow 0.25s;
+  animation:fabIn 0.5s 0.8s both;
+}
+.fab-wa:hover{transform:scale(1.1) translateY(-3px);box-shadow:0 12px 36px rgba(37,211,102,0.5);}
+@keyframes fabIn{from{opacity:0;transform:scale(0)}to{opacity:1;transform:scale(1)}}
+
+/* ── FOOTER ── */
+.page-footer{
+  background:var(--black);
+  padding:2.5rem 2rem;
+  text-align:center;
+}
+.page-footer p{
+  font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;
+  color:rgba(255,255,255,0.35);
+}
+.page-footer a{color:rgba(255,255,255,0.55);text-decoration:none;transition:color 0.2s;}
+.page-footer a:hover{color:var(--red);}
+
+/* ── REVEAL ANIMATION ── */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.6s var(--transition),transform 0.6s var(--transition);}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.d1{transition-delay:0.08s;}.d2{transition-delay:0.16s;}.d3{transition-delay:0.24s;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:600px){
+  .hero-band{padding:3.5rem 1.5rem;}
+  .page-wrapper{padding:3rem 1.2rem 5rem;}
+  .form-card{padding:1.8rem 1.2rem;}
+  .top-bar{padding:0 1.2rem;}
+  .bar-logo-text .l1{font-size:0.68rem;}
+}
+</style>
+</head>
+<body>
+
+<!-- FLOATING WHATSAPP -->
+<a class="fab-wa" href="https://wa.me/233599705447" target="_blank" title="Chat on WhatsApp">💬</a>
+
+<!-- ══════════════════════════════════════════
+     TOP BAR
+     ★ Replace both href="YOUR_WORDPRESS_URL_HERE"
+       with the actual WordPress URL ★
+════════════════════════════════════════════ -->
+<header class="top-bar">
+
+  <!-- Back button -->
+  <a class="back-btn" href="YOUR_WORDPRESS_URL_HERE">
+    <span class="back-arrow">←</span>
+    Back to Website
+  </a>
+
+  <!-- Logo (also links back to WordPress) -->
+  <a class="bar-logo" href="YOUR_WORDPRESS_URL_HERE">
+    <div class="bar-logo-box">
+      <span>SKATE</span>
+    </div>
+    <div class="bar-logo-text">
+      <span class="l1">Skate Multimedia</span>
+      <span class="l2">Studio · Photo · Video · Podcast</span>
+    </div>
+  </a>
+
+</header>
+
+<!-- ══════════════════════════════════════════
+     HERO BAND
+════════════════════════════════════════════ -->
+<section class="hero-band">
+  <!-- Diagonal grid texture matching WP site -->
+  <div class="grid-texture" aria-hidden="true">
+    <svg viewBox="0 0 600 240" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <pattern id="diag" width="60" height="60" patternUnits="userSpaceOnUse" patternTransform="rotate(-35)">
+          <line x1="0" y1="0" x2="0" y2="60" stroke="white" stroke-width="0.6"/>
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#diag)"/>
+    </svg>
+  </div>
+
+  <div class="hero-band-inner">
+    <div class="hero-eyebrow">Reserve Your Session</div>
+    <h1 class="hero-title">
+      Book a <em>Session</em><br>with Us
+    </h1>
+    <p class="hero-sub">Fill in your details below and we'll confirm your studio time within 24 hours.</p>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════ -->
+<main class="page-wrapper">
+  <div class="book-layout">
+
+    <!-- SIDEBAR -->
+    <div class="book-sidebar reveal">
+      <img
+        class="book-visual"
+        src="https://images.unsplash.com/photo-1519741497674-611481863552?w=700&q=85"
+        alt="Studio Session at Skate Multimedia"
+      />
+      <blockquote class="book-quote">
+        "Every great story starts with the right space to create it."
+      </blockquote>
+      <div class="book-meta">
+        <div class="book-meta-item">
+          <span class="book-meta-icon">📍</span>
+          <div>
+            <span class="book-meta-label">Studio Location</span>
+            <span class="book-meta-val">Spintex 18 Road, opposite GRA Spintex Branch, Tema</span>
+          </div>
+        </div>
+        <div class="book-meta-item">
+          <span class="book-meta-icon">⏱</span>
+          <div>
+            <span class="book-meta-label">Response Time</span>
+            <span class="book-meta-val">Within 24 hours</span>
+          </div>
+        </div>
+        <div class="book-meta-item">
+          <span class="book-meta-icon">📅</span>
+          <div>
+            <span class="book-meta-label">Booking Lead Time</span>
+            <span class="book-meta-val">24–48 hours notice recommended</span>
+          </div>
+        </div>
+        <div class="book-meta-item">
+          <span class="book-meta-icon">📞</span>
+          <div>
+            <span class="book-meta-label">Phone / WhatsApp</span>
+            <span class="book-meta-val">+233 59 970 5447</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOKING FORM -->
+    <div class="form-card reveal d1">
+      <div class="form-card-header">
+        <div class="form-card-num">✦</div>
+        <div>
+          <div class="form-card-title">Session Enquiry</div>
+          <div class="form-card-sub">We'll confirm your booking within 24 hours</div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-input" placeholder="Abena" id="bkFirstName"/>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-input" placeholder="Mensah" id="bkLastName"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" placeholder="you@example.com" id="bkEmail"/>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone / WhatsApp</label>
+        <input type="tel" class="form-input" placeholder="+233 20 000 0000" id="bkPhone"/>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Session Type</label>
+          <select class="form-input" id="bkType">
+            <option value="">Select a service…</option>
+            <option>Studio Rental (Photo)</option>
+            <option>Studio Rental (Video)</option>
+            <option>Podcast Recording</option>
+            <option>Content Creation / Brand Shoot</option>
+            <option>Documentary / Event Coverage</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Preferred Date</label>
+          <input type="date" class="form-input" id="bkDate"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tell Us About Your Project</label>
+        <textarea class="form-input" id="bkMessage" placeholder="Share your ideas, the story you want to tell, any special requests…"></textarea>
+      </div>
+
+      <!-- WhatsApp CTA -->
+      <a class="btn-whatsapp" href="#" onclick="sendWhatsApp(event)">
+        💬 &nbsp;Send via WhatsApp
+      </a>
+
+      <!-- Success panel (shown after submit) -->
+      <div class="success-panel" id="successPanel">
+        <span class="success-icon">✓</span>
+        <div class="success-title">Enquiry Received!</div>
+        <p class="success-text">
+          Thank you — the Skate Multimedia team will be in touch within 24 hours to confirm your session details.
+        </p>
+        <!--
+          ★ RETURN BUTTON — change href to WordPress URL ★
+          This appears after the user books and returns them to the main site.
+        -->
+        <a class="return-btn" href="YOUR_WORDPRESS_URL_HERE">
+          ← Return to Website
+        </a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+  <p>
+    Skate Multimedia Studio &nbsp;·&nbsp; Spintex 18 Road, Tema
+    &nbsp;·&nbsp;
+    <a href="https://wa.me/233599705447">+233 59 970 5447</a>
+    &nbsp;·&nbsp;
+    <a href="mailto:skatemultimediastudio@gmail.com">skatemultimediastudio@gmail.com</a>
+    &nbsp;·&nbsp;
+    <a href="https://www.instagram.com/skate_multimedia_studio">Instagram</a>
+  </p>
+</footer>
+
+<script>
+/* ── WHATSAPP ── */
+function sendWhatsApp(e){
+  e.preventDefault();
+  const name = (document.getElementById('bkFirstName').value + ' ' + document.getElementById('bkLastName').value).trim();
+  const phone = document.getElementById('bkPhone').value;
+  const type  = document.getElementById('bkType').value;
+  const date  = document.getElementById('bkDate').value;
+  const msg   = document.getElementById('bkMessage').value;
+  const text  = `Hello SKATE MULTIMEDIA! I'd like to book a session.\n\n*Name:* ${name||'N/A'}\n*Phone:* ${phone||'N/A'}\n*Session Type:* ${type||'N/A'}\n*Date:* ${date||'N/A'}\n*Message:* ${msg||'N/A'}`;
+  window.open('https://wa.me/233599705447?text='+encodeURIComponent(text),'_blank');
+}
+
+/* ── SUBMIT ── */
+function submitBooking(){
+  const first = document.getElementById('bkFirstName').value.trim();
+  const phone = document.getElementById('bkPhone').value.trim();
+  if(!first || !phone){
+    alert('Please fill in at least your name and phone number.');
+    return;
+  }
+  document.getElementById('successPanel').classList.add('show');
+  document.getElementById('successPanel').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* ── SCROLL REVEAL ── */
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target);}});
+},{threshold:0.1});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
